@@ -1,5 +1,26 @@
 import React, { Component } from 'react';
 import { Image, View, Text, StyleSheet } from 'react-native';
+import { StackNavigator } from 'react-navigation';
+
+class HomeScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Welcome',
+  };
+
+  render() {
+    return (
+      <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: 'powderblue'}}>  
+          <Text style={styles.bigblue}> Dockless Bike Reviews </Text> 
+          </View>
+        <View style={{flex: 5, backgroundColor: 'skyblue'}}>
+          <Bike name='spin'/>
+          <Bike name='limebike'/>
+          </View>
+      </View>
+    )
+  }
+}
 
 class Bike extends Component {
 
@@ -34,18 +55,23 @@ const styles = StyleSheet.create({
   red: {
     color: 'red',
   },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 })
+
+const SimpleApp = StackNavigator({
+  Home: { screen: HomeScreen }
+});
+
 
 export default class App extends React.Component {
   render() {
-    
-    return (
-      <View style={{alignItems: 'center'}}>
-        <Text style={styles.bigblue}> Dockless Bike Reviews </Text>
-        <Bike name="spin"/>
-        <Bike name="limebike"/>
-      </View>
-    );
+    return <SimpleApp />;
   }
 }
+
 
