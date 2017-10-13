@@ -1,91 +1,70 @@
-import React from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import MapView from 'react-native-maps'
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import TabNavigator from 'react-native-tab-navigator';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
-const {width, height} = Dimensions.get('window')
-const SCREEN_HEIGHT = height
-const SCREEN_WIDTH = width
-const ASPECT_RATIO = width/height
-const LATITUDE_DELTA = 0.0922
-const LONGITUDE_DELTA = LATITUDE_DELTA
+const deviceW = Dimensions.get('window').width
+const basePx = 375
 
+function px2dp(px) {
+  return px *  deviceW / basePx
+}
 
-
-export default class App extends React.Component {
-  constructor(props){
-    super(props)
-
-    this.state = {
-      initialPosition: {
-        latitude: 0,
-        longitude: 0,
-        latitudeDelta: 0,
-        longitudeDelta: 0
-      },
-      markerPosition: {
-        latitude: 0,
-        longitude: 0
-      }
-    }
-  }
-
-  watchID: (null: ?number),
-
-  componentDidMount(){
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-      var lat = parseFloat(position.coords.latitude)
-      var long = parseFloat(position.coords.longitude)
-
-      initialRegion = {
-        latitude: lat,
-        longitude: long,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }
-
-      this.setState({initialPosition: initialRegion})
-      this.setState({markerPosition: initialRegion})
-    }, (error) => alert(JSON.stringify(error)),
-    {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000})
-    this.watchID = navigator.geolocation/watchID((position) => {
-      var lat = parseFloat(position.coords.latitude)
-      var long = parseFloat(position.coords.longitude)
-
-      var lastRegion = {
-        latitude: lat,
-        longitude: long,
-        longitudeDelta: LONGITUDE_DELTA,
-        latitudeDelta: LATITUDE_DELTA
-      }
-      this.setState({initialPosition: initialRegion})
-      this.setState({markerPosition: initialRegion})
-    })
-
-  }
+class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-        <MapView.Marker
-          coordinate={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-          }}>
-          <View style={styles.radius}>
-            <View style={styles.marker}/>
-           </View>
-          </MapView.Marker>
-          </MapView>
+        <Text style={styles.welcome}>
+          Home
+        </Text>
       </View>
+    )
+  }
+}
+
+class Profile extends Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.welcome}>
+          Profile
+        </Text>
+      </View>
+    )
+  }
+}
+
+export default class App extends React.Component {
+  state= {
+    selectedTab: 'home'
+  };
+
+  render() {
+    let pic = {
+      uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Spin_bicycle_in_Seattle%2C_July_2017.jpg/1200px-Spin_bicycle_in_Seattle%2C_July_2017.jpg"
+    }
+    return (
+      <TabNavigator>
+        <TabNavigator.Item
+          selected={this.state.selectedTab === 'home'}
+          title="Home"
+          selectedTitleStyle={{color: "#3496f0"}}
+          renderIcon={() => <Icon name="ride" size={px2dp(22)} color="#666"/>}
+          renderSelectedIcon={() => <Icon name="bicycle" size={px2dp(22)} color="#3496f0"/>}
+          onPress={() => this.setState({ selectedTab: 'home' })}>
+          <Home/>
+        </TabNavigator.Item>
+        <TabNavigator.Item
+          selected={this.state.selectedTab === 'profile'}
+          title="Profile"
+          selectedTitleStyle={{color: "#3496f0"}}
+          renderIcon={() => <Icon name="user" size={px2dp(22)} color="#666"/>}
+          renderSelectedIcon={() => <Icon name="user" size={px2dp(22)} color="#3496f0"/>}
+          onPress={() => this.setState({selectedTab: 'profile'})}>
+          <Profile/>
+        </TabNavigator.Item>
+      </TabNavigator>
+
     );
   }
 }
@@ -97,31 +76,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  map: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute'
-  },
-  radius: {
-    height: 50,
-    width: 50,
-    borderRadius: 50 / 2,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 112, 255, 0.3)',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  marker: {
-    height: 20,
-    width: 20,
-    borderWidth: 3,
-    borderColor: 'white',
-    borderRadius: 20/2,
-    overflow: 'hidden',
-    backgroundColor: '#007AFF'
-  }
 });
