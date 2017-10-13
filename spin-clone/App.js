@@ -14,8 +14,52 @@ function px2dp(px) {
 
 class Home extends Component {
   state = {
-    mapRegion: { latitude: 37.2872, longitude: -121.9500, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }
+    locationResult: null,
+    mapRegion: null,
+    lastLat: null,
+    lastLong: null,
   };
+
+  componentDidMount() {
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      // Create the object to update this.state.mapRegion through the onRegionChange function
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta:  0.00922*1.5,
+        longitudeDelta: 0.00421*1.5
+      }
+      this.onRegionChange(region, region.latitude, region.longitude);
+    });
+    this._getLocationAsync();
+  }
+
+  onRegionChange(region, lastLat, lastLong) {
+    this.setState({
+      mapRegion: region,
+      // If there are no new values set the current ones
+      lastLat: lastLat || this.state.lastLat,
+      lastLong: lastLong || this.state.lastLong
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
+
+  _getLocationAsync = async () => {
+   let { status } = await Permissions.askAsync(Permissions.LOCATION);
+   if (status !== 'granted') {
+     this.setState({
+       locationResult: 'Permission to access location was denied',
+     });
+   }
+
+   let location = await Location.getCurrentPositionAsync({});
+   console.log(location)
+   this.setState({ locationResult: JSON.stringify(location) });
+ };
 
   _handleMapRegionChange = mapRegion => {
     this.setState({ mapRegion });
@@ -25,8 +69,10 @@ class Home extends Component {
     return (
       <View style={styles.container}>
         <MapView
-          style={{ alignSelf: 'stretch', height: deviceH}}
+          style={{ alignSelf: 'stretch', flex: 1}}
           region={this.state.mapRegion}
+          showsUserLocation={true}
+          followUserLocation={true}
           provider={MapView.PROVIDER_GOOGLE}
           onRegionChange={this._handleMapRegionChange}
         >
