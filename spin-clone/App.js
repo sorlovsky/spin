@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { MapView, Constants } from 'expo'
 
 const deviceW = Dimensions.get('window').width
+const deviceH = Dimensions.get('window').height
 const basePx = 375
 
 function px2dp(px) {
@@ -11,14 +13,27 @@ function px2dp(px) {
 }
 
 class Home extends Component {
+  state = {
+    mapRegion: { latitude: 37.2872, longitude: -121.9500, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }
+  };
+
+  _handleMapRegionChange = mapRegion => {
+    this.setState({ mapRegion });
+  };
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Home
-        </Text>
+        <MapView
+          style={{ alignSelf: 'stretch', height: deviceH}}
+          region={this.state.mapRegion}
+          provider={MapView.PROVIDER_GOOGLE}
+          onRegionChange={this._handleMapRegionChange}
+        >
+        
+        </MapView>
       </View>
-    )
+    );
   }
 }
 
