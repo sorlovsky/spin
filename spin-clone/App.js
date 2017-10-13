@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { MapView, Constants } from 'expo'
+import { MapView, Constants, Location, Permissions } from 'expo'
 
 const deviceW = Dimensions.get('window').width
 const deviceH = Dimensions.get('window').height
@@ -42,7 +42,9 @@ class Profile extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
+          
           Profile
+    
         </Text>
       </View>
     )
@@ -64,7 +66,7 @@ export default class App extends React.Component {
           selected={this.state.selectedTab === 'home'}
           title="Home"
           selectedTitleStyle={{color: "#3496f0"}}
-          renderIcon={() => <Icon name="ride" size={px2dp(22)} color="#666"/>}
+          renderIcon={() => <Icon name="bicycle" size={px2dp(22)} color="#666"/>}
           renderSelectedIcon={() => <Icon name="bicycle" size={px2dp(22)} color="#3496f0"/>}
           onPress={() => this.setState({ selectedTab: 'home' })}>
           <Home/>
