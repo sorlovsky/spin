@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, Button, Alert, Modal, TouchableHighlight } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { MapView, Constants, Location, Permissions } from 'expo'
+import { MapView, Constants, Location, Permissions, BarCodeScanner } from 'expo'
 
 const deviceW = Dimensions.get('window').width
 const deviceH = Dimensions.get('window').height
@@ -65,9 +65,17 @@ class Home extends Component {
     this.setState({ mapRegion });
   };
 
+  _handleButtonPress = () => {
+    Alert.alert(
+      'Button pressed!',
+      'You did it!',
+    );
+  };
+
   render() {
     return (
       <View style={styles.container}>
+        <ModalExample/>
         <MapView
           style={{ alignSelf: 'stretch', flex: 1}}
           region={this.state.mapRegion}
@@ -76,8 +84,11 @@ class Home extends Component {
           provider={MapView.PROVIDER_GOOGLE}
           onRegionChange={this._handleMapRegionChange}
         >
-        
-        </MapView>
+        <MapView.Marker
+          title="Bike" description="campbell" coordinate={{latitude: 37.287167, longitude: -121.949959}}/>
+        <MapView.Polyline strokeColor="orange" coordinates={[{latitude: 37.287167, longitude: -121.949959}, {latitude: 37.387167, longitude: -121.949959}]}/>
+
+      </MapView>
       </View>
     );
   }
@@ -103,10 +114,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    let pic = {
-      uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Spin_bicycle_in_Seattle%2C_July_2017.jpg/1200px-Spin_bicycle_in_Seattle%2C_July_2017.jpg"
-    }
-    return (
+     return (
       <TabNavigator>
         <TabNavigator.Item
           selected={this.state.selectedTab === 'home'}
@@ -140,3 +148,72 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+class ModalExample extends Component {
+  componentDidMount() {
+    this._requestCameraPermission();
+  }
+
+  _requestCameraPermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({
+      hasCameraPermission: status === 'granted',
+    });
+  };
+
+  _handleBarCodeRead = data => {
+    Alert.alert(
+      'Scan successful!',
+      JSON.stringify(data)
+    );
+  };
+
+  state = {
+    modalVisible: false,
+  }
+
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
+  render() {
+    return (
+      <View style={{marginTop: 22}}>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {alert("Modal has been closed.")}}
+          >
+         <View style={{marginTop: 22}}>
+          <View>
+            {this.state.hasCameraPermission === null ?
+          <Text>Requesting for camera permission</Text> :
+          this.state.hasCameraPermission === false ?
+            <Text>Camera permission is not granted</Text> :
+            <BarCodeScanner
+              onBarCodeRead={this._handleBarCodeRead}
+              style={{ height: 200, width: 200 }}
+            />
+        }
+
+            <TouchableHighlight onPress={() => {
+              this.setModalVisible(!this.state.modalVisible)
+            }}>
+              <Text>Hide Modal</Text>
+            </TouchableHighlight>
+
+          </View>
+         </View>
+        </Modal>
+
+        <TouchableHighlight onPress={() => {
+          this.setModalVisible(true)
+        }}>
+          <Text>Unlock Bike</Text>
+        </TouchableHighlight>
+
+      </View>
+    );
+  }
+}
