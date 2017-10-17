@@ -1,5 +1,5 @@
 {
-  "name": "spin-clone",
+  "name": "basics",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -20,11 +20,8 @@
   },
   "dependencies": {
     "expo": "^21.0.2",
-    "geolib": "^2.0.23",
-    "react": "^16.0.0-alpha.12",
+    "react": "16.0.0-alpha.12",
     "react-native": "^0.48.4",
-    "react-native-maps": "^0.17.0",
-    "react-native-tab-navigator": "^0.3.4",
-    "react-native-vector-icons": "^4.4.2"
+    "react-native-tab-navigator": "^0.3.4"
   }
 }

@@ -1,0 +1,15 @@
+{
+  "name": "geolib-ex",
+  "version": "1.0.0",
+  "description": "geolib ex",
+  "main": "geo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/maps": "^0.4.5",
+    "geolib": "^2.0.23"
+  }
+}

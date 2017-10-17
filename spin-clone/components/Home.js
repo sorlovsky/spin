@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { View, Alert, Text, StyleSheet } from 'react-native'
+import { View, Alert, Text, StyleSheet, Button } from 'react-native'
 import { MapView, Constants, Location, Permissions } from 'expo'
 import BikeQR from './BikeQR'
+import geolib from 'geolib'
 
 export default class Home extends Component {
   state = {
@@ -63,10 +64,25 @@ export default class Home extends Component {
     );
   };
 
+  _hello = () => {
+      console.log('hello')
+  }
+
+  _randomCoordinates = () => {
+      var offset = Math.random()/100
+      return {latitude: this.state.lastLat+offset, longitude: this.state.lastLong+offset}
+  }
+
+  _c1 = this._randomCoordinates()
+  _c2 = this._randomCoordinates()
+
   render() {
     return (
       <View style={styles.container}>
         <BikeQR/>
+        {/*{geolib.getDistance({})}*/}
+        <Button title="hello" onPress={this._hello}/>
+        {/*<Text>Distance = {geolib.getDistance({latitude: this.state.lastLat, longitude: this.state.lastLong}, {latitude: 37.287167, longitude: -121.949959})}, </Text>*/}
         <MapView
           style={{ alignSelf: 'stretch', flex: 1}}
           region={this.state.mapRegion}
@@ -77,6 +93,10 @@ export default class Home extends Component {
         >
         <MapView.Marker
           title="Bike" description="campbell" coordinate={{latitude: 37.287167, longitude: -121.949959}}/>
+           <MapView.Marker
+          title="Bike" description="campbell" coordinate={this._c1}/>
+          <MapView.Marker
+          title="Bike" description="campbell" coordinate={this._c2}/>
           
         <MapView.Polyline strokeColor="orange" strokeWidth={5} coordinates={[{latitude: 37.287167, longitude: -121.949959}, {latitude: 37.387167, longitude: -121.949959}]}/>
 
